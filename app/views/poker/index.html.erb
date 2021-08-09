@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>poker</title>
+  </head>
+  
+  <body>
+    <div class="container">
+        <div class='mx-auto' style="width: 500px;">
+            <h1 class="my-5">poker役判定</h1>
+            <%= form_with method: :post, local: true do |f| %>
+                <div class="my-5">
+                    <label for="pokerForm" class="form-label">半角スペースを使って、カードを五枚入力してください。</label>
+                    <div class="d-flex flex-column align-items-center justify-content-center my-3">
+                        <%= f.text_field :array, :placeholder => "S1 C6 H11 S9 D2", :class => "form-control form-control-lg text-center my-3" %>
+                        <%= f.submit "送信", :class => "btn btn-primary btn-lg mt-3" %>
+                    </div>
+                </div>
+            <% end %>
+            
+            <% if @text %>
+                <div class='border border-secondary h2 text-center center-block text-info' >
+                    <%= p @text %>
+                </div>
+            <% end %>
+
+        </div>
+    </div>
+
+
+
+
+    
+  </body>
+</html>
