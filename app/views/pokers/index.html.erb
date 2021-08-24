@@ -11,31 +11,36 @@
   </head>
   
   <body>
+  
     <div class="container">
-        <div class='mx-auto' style="width: 500px;">
+        <div class='mx-auto' style="width: 650px;">
             <h1 class="my-5">poker役判定</h1>
             <%= form_with method: :post, local: true do |f| %>
                 <div class="my-5">
                     <label for="pokerForm" class="form-label">半角スペースを使って、カードを五枚入力してください。</label>
                     <div class="d-flex flex-column align-items-center justify-content-center my-3">
-                        <%= f.text_field :array, :placeholder => "S1 C6 H11 S9 D2", :class => "form-control form-control-lg text-center my-3" %>
+                        <%= f.text_field :array, value: params[:array], :placeholder => "S1 C6 H11 S9 D2", :class => "form-control form-control-lg text-center my-3" %>
                         <%= f.submit "送信", :class => "btn btn-primary btn-lg mt-3" %>
                     </div>
                 </div>
             <% end %>
             
-            <% if @text %>
-                <div class='border border-secondary h2 text-center center-block text-info' >
-                    <%= p @text %>
+            <% if @suit_warn.present? || @input_warn.present? %>
+                <div class='border border-secondary h2 text-center mx-auto text-info' >
+                    <% @suit_warn.each do |w| %>
+                        <%= "#{w[0]}番目のカード指定文字が不正です。（#{w[1]})" %></br>
+                    <% end %>
+                    <%= p @input_warn %>
+                </div>
+                
+            <% elsif @show_hand.present? %>
+                <div class='border border-secondary h2 text-center mx-auto text-info' >
+                    <%= p @show_hand %>
                 </div>
             <% end %>
 
+
         </div>
     </div>
-
-
-
-
-    
   </body>
 </html>

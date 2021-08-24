@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
-  resources :poker
-  root to: 'poker#index'
+  resources :pokers
+  root to: 'pokers#index'
+  mount API::Root => '/'
 end

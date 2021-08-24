@@ -1,6 +1,6 @@
 class JudgeHand
 
-    def self.judge_hand(params)
+    def self.judge_hand_api(params)
         # common
         @array = params[:array]
         @string = @array.gsub(/[[:space:]]/, '')
@@ -31,48 +31,37 @@ class JudgeHand
 
         @count_overlap = @strtoint.group_by(&:itself).map{ |key, value| [key, value.count] }.sort{ |a, b| a[1] <=> b[1] }
         @get_value = @count_overlap.map{|row| row[1]}
-
         # judgement
         #ロイヤルストレートフラッシュ…同じマークのA・K・Q・J・10
         if @sort_n == [1, 10, 11, 12, 13] && @count_m == 1 
-            @show_hand = "ロイヤルストレートフラッシュ"
-
+            return 0
         #ストレートフラッシュ…同じマークで連番
         elsif @count_m == 1 && @variety == [1,1,1,1]
-            @show_hand = "ストレートフラッシュ" 
-
+            return 1
         #フォーカード…同じ数字が4枚
         elsif @get_value == [1, 4]
-            @show_hand = "フォーカード"
-
+            return 2
         #フルハウス…同じ数字が3枚と同じ数字が2枚の組み合わせ
         elsif @get_value == [2, 3]
-            @show_hand = "フルハウス"
-
+            return 3
         #ストレート…連番
         elsif @count_m != 1  && @variety == [1,1,1,1]
-            @show_hand = "ストレート"
-
+            return 4
         #フラッシュ…同じマークが5枚
         elsif @sort_n != [1, 10, 11, 12, 13] && @count_m == 1
-            @show_hand = "フラッシュ"
-
+            return 5
         #スリーカード…同じ数字が3枚
         elsif @get_value == [1, 1, 3] 
-            @show_hand = "スリーカード"
-        
+            return 6
         #ツーペア
         elsif @get_value == [1, 2, 2] 
-            @show_hand = "ツーペア"
-
+            return 7
         #ワンペア
         elsif @get_value == [1, 1, 1, 2]
-            @show_hand = "ワンペア"
-
+            return 8
         #ハイカード
         else
-            @show_hand = "ハイカード"
+            return 9
         end
-        return @show_hand
     end
 end
