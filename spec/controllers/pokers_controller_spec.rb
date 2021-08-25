@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 # 1 受信したリクエストに対して適切なレスポンスを返す
 #   リクエストに対してHTTPレスポンスがステータスコード200を返す。とか。
@@ -8,22 +8,22 @@ require 'rails_helper'
 #   適切なテンプレートを表示している。とか。
 
 RSpec.describe "Pokers", type: :request do
-  shared_examples '200 OK' do
+  shared_examples "200 OK" do
     it "the request is to be 200 OK" do
       expect(response.status).to eq 200
     end
   end
-  shared_examples 'render index' do
+  shared_examples "render index" do
     it "show the index template" do
       expect(response).to render_template :index
     end
   end
-  shared_examples '@input_warn is nil' do
+  shared_examples "@input_warn is nil" do
     it "@input_warn returns nil" do
       expect(@input_warn).to be_nil
     end
   end
-  shared_examples '@suit_warn is empty' do
+  shared_examples "@suit_warn is empty" do
     it "@suit_warn returns empty" do
       expect(@suit_warn).to be_empty
     end
@@ -33,6 +33,7 @@ RSpec.describe "Pokers", type: :request do
     before do
       get "/pokers"
     end
+
     it_behaves_like "200 OK"
     it_behaves_like "render index"
   end
@@ -43,11 +44,13 @@ RSpec.describe "Pokers", type: :request do
       @input_warn = Validation.validate_input(params_array)
       @suit_warn = Validation.validate_suit(params_array)
       @show_hand = JudgeHand.judge_hand(params_array)
-      @s_w = @suit_warn.map{ |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
+      @s_w = @suit_warn.map { |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
     end
-    context "params is valid" do
-      context "in case of royal straight flush" do
-        let (:params_array) { { array: "S1 S11 S13 S10 S12" } }
+
+    context "when params is valid" do
+      context "when royal straight flush" do
+        let(:params_array) { { array: "S1 S11 S13 S10 S12" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -57,8 +60,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of straight flush" do
-        let (:params_array) { { array: "C6 C5 C3 C2 C4" } }
+      context "when straight flush" do
+        let(:params_array) { { array: "C6 C5 C3 C2 C4" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -68,8 +72,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of four card" do
-        let (:params_array) { { array: "H7 D7 C8 C7 S7" } }
+      context "when four card" do
+        let(:params_array) { { array: "H7 D7 C8 C7 S7" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -79,8 +84,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of full house" do
-        let (:params_array) { { array: "S4 H9 C4 H4 D9" } }
+      context "when full house" do
+        let(:params_array) { { array: "S4 H9 C4 H4 D9" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -90,8 +96,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of straight" do
-        let (:params_array) { { array: "S4 H7 C5 H6 D8" } }
+      context "when straight" do
+        let(:params_array) { { array: "S4 H7 C5 H6 D8" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -101,8 +108,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of flush" do
-        let (:params_array) { { array: "D4 D11 D5 D9 D8" } }
+      context "when flush" do
+        let(:params_array) { { array: "D4 D11 D5 D9 D8" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -112,8 +120,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of three cards" do
-        let (:params_array) { { array: "D4 H11 D11 S3 C11" } }
+      context "when three cards" do
+        let(:params_array) { { array: "D4 H11 D11 S3 C11" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -123,8 +132,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of two pairs" do
-        let (:params_array) { { array: "D4 S13 D13 S3 H3" } }
+      context "when two pairs" do
+        let(:params_array) { { array: "D4 S13 D13 S3 H3" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -134,8 +144,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of one pair" do
-        let (:params_array) { { array: "D4 S7 C3 S1 C1" } }
+      context "when one pair" do
+        let(:params_array) { { array: "D4 S7 C3 S1 C1" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -145,8 +156,9 @@ RSpec.describe "Pokers", type: :request do
         it_behaves_like "render index"
       end
 
-      context "in case of high card" do
-        let (:params_array) { { array: "S1 H3 D9 C13 S11" } }
+      context "when high card" do
+        let(:params_array) { { array: "S1 H3 D9 C13 S11" } }
+
         it_behaves_like "200 OK"
         it_behaves_like "@input_warn is nil"
         it_behaves_like "@suit_warn is empty"
@@ -157,59 +169,71 @@ RSpec.describe "Pokers", type: :request do
       end
     end
 
+    context "when params is invalid" do
+      context "when input is invalid" do
+        context "when params is empty" do
+          let(:params_array) { { array: "" } }
 
-    context "params is invalid" do
-      context "input is invalid" do
-        context "params is empty" do
-          let (:params_array) { { array: "" } }
           it_behaves_like "200 OK"
           it "@input_warn is 5つのカード指定文字~" do
             expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
           end
           it_behaves_like "@suit_warn is empty"
         end
-        context "params is more than an expectation" do
-          let (:params_array) { { array: "S1 H3 D9 C13 S11 D4" } }
+
+        context "when params is more than an expectation" do
+          let(:params_array) { { array: "S1 H3 D9 C13 S11 D4" } }
+
           it_behaves_like "200 OK"
           it "@input_warn is 5つのカード指定文字~" do
             expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
           end
           it_behaves_like "@suit_warn is empty"
         end
-        context "params is duplicated" do
-          let (:params_array) { { array: "S1 C13 D9 C13 S11" } }
+
+        context "when params is duplicated" do
+          let(:params_array) { { array: "S1 C13 D9 C13 S11" } }
+
           it_behaves_like "200 OK"
           it "@input_warn is カードが重複しています。" do
             expect(@input_warn).to eq "カードが重複しています。"
           end
           it_behaves_like "@suit_warn is empty"
         end
-        context "params has extra spaces" do
-          let (:params_array) { { array: "S1   C13 D9  C13 S11" } }
+
+        context "when params has extra spaces" do
+          let(:params_array) { { array: "S1   C13 D9  C13 S11" } }
+
           it_behaves_like "200 OK"
           it "@input_warn is 5つのカード指定文字~" do
             expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
           end
           it_behaves_like "@suit_warn is empty"
         end
-        context "params has extra spaces at the head" do
-          let (:params_array) { { array: " S1 C13 D9 C13 S11" } }
+
+        context "when params has extra spaces at the head" do
+          let(:params_array) { { array: " S1 C13 D9 C13 S11" } }
+
           it_behaves_like "200 OK"
           it "@input_warn is 先頭に〜〜" do
             expect(@input_warn).to eq "先頭にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
           end
           it_behaves_like "@suit_warn is empty"
         end
-        context "params has extra spaces at the end" do
-          let (:params_array) { { array: "S1 C13 D9 C13 S11 " } }
+
+        context "when params has extra spaces at the end" do
+          let(:params_array) { { array: "S1 C13 D9 C13 S11 " } }
+
           it_behaves_like "200 OK"
           it "@input_warn is 末尾に〜〜" do
             expect(@input_warn).to eq "末尾にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
           end
           it_behaves_like "@suit_warn is empty"
         end
-        context "params has extra spaces both at the head and end" do
-          let (:params_array) { { array: "   S1 C13 D9 C13 S11   " } }
+
+        context "when params has extra spaces both at the head and end" do
+          let(:params_array) { { array: "   S1 C13 D9 C13 S11   " } }
+
           it_behaves_like "200 OK"
           it "@input_warn is 先頭にも末尾にも〜〜" do
             expect(@input_warn).to eq "先頭にも末尾にもスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
@@ -217,18 +241,21 @@ RSpec.describe "Pokers", type: :request do
           it_behaves_like "@suit_warn is empty"
         end
       end
-      context "suit is invalid" do
-        context "the first suit is invalid" do
-          let (:params_array) { { array: "S107 C1 D9 C13 D5" } }
+
+      context "when the suit is invalid" do
+        context "when the first suit is invalid" do
+          let(:params_array) { { array: "S107 C1 D9 C13 D5" } }
+
           it_behaves_like "200 OK"
           it_behaves_like "@input_warn is nil"
           it "@suit_warn is 1番目のカード指定文字が不正です。（S107）" do
             expect(@s_w).to eq ["1番目のカード指定文字が不正です。（S107）"]
           end
-          
         end
-        context "the multiple suits are invalid" do
-          let (:params_array) { { array: "S107 C1555 D9 C138 D5" } }
+
+        context "when the multiple suits are invalid" do
+          let(:params_array) { { array: "S107 C1555 D9 C138 D5" } }
+
           it_behaves_like "200 OK"
           it_behaves_like "@input_warn is nil"
           it "@suit_warn is 1番目のカード指定文字が不正です。（S107）~~" do
@@ -236,7 +263,6 @@ RSpec.describe "Pokers", type: :request do
           end
         end
       end
-      
     end
   end
 end

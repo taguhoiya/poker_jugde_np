@@ -1,78 +1,70 @@
 class JudgeHand
+  def self.judge_hand(params)
+    # common
+    @array = params[:array]
+    @string = @array.gsub(/[[:space:]]/, "")
 
-    def self.judge_hand(params)
-        # common
-        @array = params[:array]
-        @string = @array.gsub(/[[:space:]]/, '')
+    # variables for mark
+    @m_array = @array.scan(/[A-Z]/)
+    @m_array_scanned = @array.scan(/[CDHS]/)
+    @count_m = @m_array_scanned.uniq.count
 
-        # variables for mark
-        @m_array = @array.scan(/[A-Z]/)
-        @m_array_scanned = @array.scan(/[CDHS]/)
-        @count_m = @m_array_scanned.uniq.count
+    # variables for number
+    @n_array = @string.split(/[A-Z]/).drop(1)
+    @strtoint = @n_array.map(&:to_i)
+    @count_n = @n_array.uniq.count
+    @sort_n = @strtoint.sort
+    @variety = @sort_n.map { |n| n - @sort_n[0] }
 
-        # variables for number
-        @n_array = @string.split(/[A-Z]/).drop(1)
-        @strtoint = @n_array.map{|n| n.to_i}
-        @count_n = @n_array.uniq.count
-        @sort_n = @strtoint.sort
+    # array for each card
+    @array_del_spa = @array.strip
+    @arr_modi = @array_del_spa.split
+    @censor = @arr_modi.reject { |e| e =~ /[CDHS]1[0123]\z/ }.reject { |e| e =~ /[CDHS][1-9]\z/ }
 
-        # array for each card
-        @array_del_spa = @array.lstrip.rstrip
-        @arr_modi = @array_del_spa.split(" ")
-        @censor = @arr_modi.reject {|e| e =~ /[CDHS]1[0123]\z/}.reject {|e| e =~ /[CDHS][1-9]\z/}
+    @count_overlap = @strtoint.group_by(&:itself).map { |key, value| [key, value.count] }.sort_by { |a| a[1] }
+    @get_value = @count_overlap.map { |row| row[1] }
 
-        if @sort_n.present?
-            @variety = []
-            @sort_n.map.with_index do |n, i|
-                @variety << @sort_n[i+1] - @sort_n[i]
-                break if i==3
-            end
-        end
+    # judgement
+    # ロイヤルストレートフラッシュ…同じマークのA・K・Q・J・10
+    @show_hand = if @sort_n == [1, 10, 11, 12, 13] && @count_m == 1
+                   "ロイヤルストレートフラッシュ"
 
-        @count_overlap = @strtoint.group_by(&:itself).map{ |key, value| [key, value.count] }.sort{ |a, b| a[1] <=> b[1] }
-        @get_value = @count_overlap.map{|row| row[1]}
+                 # ストレートフラッシュ…同じマークで連番
+                 elsif @count_m == 1 && @variety == [0, 1, 2, 3, 4]
+                   "ストレートフラッシュ"
 
-        # judgement
-        #ロイヤルストレートフラッシュ…同じマークのA・K・Q・J・10
-        if @sort_n == [1, 10, 11, 12, 13] && @count_m == 1 
-            @show_hand = "ロイヤルストレートフラッシュ"
+                 # フォーカード…同じ数字が4枚
+                 elsif @get_value == [1, 4]
+                   "フォーカード"
 
-        #ストレートフラッシュ…同じマークで連番
-        elsif @count_m == 1 && @variety == [1,1,1,1]
-            @show_hand = "ストレートフラッシュ" 
+                 # フルハウス…同じ数字が3枚と同じ数字が2枚の組み合わせ
+                 elsif @get_value == [2, 3]
+                   "フルハウス"
 
-        #フォーカード…同じ数字が4枚
-        elsif @get_value == [1, 4]
-            @show_hand = "フォーカード"
+                 # ストレート…連番
+                 elsif @count_m != 1 && @variety == [0, 1, 2, 3, 4]
+                   "ストレート"
 
-        #フルハウス…同じ数字が3枚と同じ数字が2枚の組み合わせ
-        elsif @get_value == [2, 3]
-            @show_hand = "フルハウス"
+                 # フラッシュ…同じマークが5枚
+                 elsif @sort_n != [1, 10, 11, 12, 13] && @count_m == 1
+                   "フラッシュ"
 
-        #ストレート…連番
-        elsif @count_m != 1  && @variety == [1,1,1,1]
-            @show_hand = "ストレート"
+                 # スリーカード…同じ数字が3枚
+                 elsif @get_value == [1, 1, 3]
+                   "スリーカード"
 
-        #フラッシュ…同じマークが5枚
-        elsif @sort_n != [1, 10, 11, 12, 13] && @count_m == 1
-            @show_hand = "フラッシュ"
+                 # ツーペア
+                 elsif @get_value == [1, 2, 2]
+                   "ツーペア"
 
-        #スリーカード…同じ数字が3枚
-        elsif @get_value == [1, 1, 3] 
-            @show_hand = "スリーカード"
-        
-        #ツーペア
-        elsif @get_value == [1, 2, 2] 
-            @show_hand = "ツーペア"
+                 # ワンペア
+                 elsif @get_value == [1, 1, 1, 2]
+                   "ワンペア"
 
-        #ワンペア
-        elsif @get_value == [1, 1, 1, 2]
-            @show_hand = "ワンペア"
-
-        #ハイカード
-        else
-            @show_hand = "ハイカード"
-        end
-        return @show_hand
-    end
+                 # ハイカード
+                 else
+                   "ハイカード"
+                 end
+    return @show_hand
+  end
 end
