@@ -20,7 +20,7 @@ RSpec.describe "Pokers", type: :request do
   end
   shared_examples '@input_warn is nil' do
     it "@input_warn returns nil" do
-      expect(@input_warn).to be nil
+      expect(@input_warn).to be_nil
     end
   end
   shared_examples '@suit_warn is empty' do
@@ -231,7 +231,7 @@ RSpec.describe "Pokers", type: :request do
           let (:params_array) { { array: "S107 C1555 D9 C138 D5" } }
           it_behaves_like "200 OK"
           it_behaves_like "@input_warn is nil"
-          it "@suit_warn is 1番目のカード指定文字が不正です。（S107）" do
+          it "@suit_warn is 1番目のカード指定文字が不正です。（S107）~~" do
             expect(@s_w).to eq ["1番目のカード指定文字が不正です。（S107）", "2番目のカード指定文字が不正です。（C1555）", "4番目のカード指定文字が不正です。（C138）"]
           end
         end

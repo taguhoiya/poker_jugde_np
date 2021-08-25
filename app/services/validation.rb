@@ -4,7 +4,6 @@ class Validation
         @array = params[:array]
         @m_array_scanned = @array.scan(/[CDHS]/)
         @make_array = @array.split(" ")
-
         # 例外バリデーション || カード数が5より大きい
         if  @array.empty? || @make_array.size != 5
             @input_warn = "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
