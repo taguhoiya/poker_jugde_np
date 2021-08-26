@@ -12,15 +12,15 @@ module API
       require "json"
       resource :cards do
         format :json
-        # GET /api/v1/cards/check
+
         desc "Return warnings"
         get ":check" do
-          error!("Unauthorized! Invalid token.", 401)
+          error! "不正なURLです。", 404
         end
 
         desc "Return the accurate JSON"
         post ":check" do
-          @body = env["api.request.body"]["cards"]
+          @body = params["cards"]
           @worth = []
           @worth_bool = []
           @show_hand = []
@@ -45,9 +45,13 @@ module API
               @result << { "card" => b, "error" => @input_warn[i] }
             end
             if @suit_warn[i].present?
-              @suit_warn = @suit_warn.flatten.each_slice(2).to_a
-              @result << { "card" => b, "error" => "#{@suit_warn[i][0]}番目のカード指定文字が不正です。（#{@suit_warn[i][1]})" }
+              @s_w = @suit_warn.select(&:present?)
+              @s_w = @s_w.flatten.each_slice(2).to_a
+              @s_w.each do |s|
+                @result << { "card" => b, "error" => "#{s[0]}番目のカード指定文字が不正です。（#{s[1]})" }
+              end
             end
+
             if @input_warn[i].blank? && @suit_warn[i].blank?
               @result << { "card" => b, "hand" => @show_hand[i], "best" => @worth_bool[i] }
             end

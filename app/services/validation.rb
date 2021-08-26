@@ -5,28 +5,28 @@ class Validation
     @make_array = @array.split
     # 例外バリデーション || カード数が5より大きい
     if @array.empty? || @make_array.size != 5
-      @input_warn = "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
+      input_warn = "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
     end
 
     # カードが重複していないか
     if (@make_array.count - @make_array.uniq.count).positive?
-      @input_warn = "カードが重複しています。"
+      input_warn = "カードが重複しています。"
     end
 
     # 余分なスペースがないかバリデーション（二文字以上のスペース＋文頭文末に１文字以上のスペース＋カードが五枚入力されているか）
     if @array.scan(/  +/).present?
-      @input_warn = "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
+      input_warn = "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
     end
     if @array.scan(/^ +/).present?
-      @input_warn = "先頭にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
+      input_warn = "先頭にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
     end
     if @array.scan(/ +$/).present?
-      @input_warn = "末尾にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
+      input_warn = "末尾にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
     end
     if @array.scan(/^ +/).present? && @array.scan(/ +$/).present?
-      @input_warn = "先頭にも末尾にもスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
+      input_warn = "先頭にも末尾にもスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
     end
-    return @input_warn
+    return input_warn
   end
 
   def self.validate_suit(params)

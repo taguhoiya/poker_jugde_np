@@ -139,6 +139,10 @@ RSpec/MultipleExpectations:
 RSpec/NestedGroups:
   Max: 5
 
+RSpec/ExampleLength:
+  Exclude:
+  - 'spec/requests/api/ver1/pokers_spec.rb'
+
 Style/BlockComments:
   Exclude:
     - 'spec/spec_helper.rb'
