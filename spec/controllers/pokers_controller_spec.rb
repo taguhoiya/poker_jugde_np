@@ -39,15 +39,15 @@ RSpec.describe "Pokers", type: :request do
   end
 
   describe "POST #create" do
-    before do
-      post "/pokers", params: params_array
-      @input_warn = Validation.validate_input(params_array)
-      @suit_warn = Validation.validate_suit(params_array)
-      @show_hand = JudgeHand.judge_hand(params_array)
-      @s_w = @suit_warn.map { |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
-    end
-
     context "when params is valid" do
+      before do
+        post "/pokers", params: params_array
+        @input_warn = Validation.validate_input(params_array)
+        @suit_warn = Validation.validate_suit(params_array)
+        @show_hand = JudgeHand.judge_hand(params_array)
+        @s_w = @suit_warn.map { |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
+      end
+
       context "when royal straight flush" do
         let(:params_array) { { array: "S1 S11 S13 S10 S12" } }
 
@@ -170,97 +170,101 @@ RSpec.describe "Pokers", type: :request do
     end
 
     context "when params is invalid" do
-      context "when input is invalid" do
-        context "when params is empty" do
-          let(:params_array) { { array: "" } }
+      before do
+        post "/pokers", params: params_array
+        @input_warn = Validation.validate_input(params_array)
+        @suit_warn = Validation.validate_suit(params_array)
+        @show_hand = JudgeHand.judge_hand(params_array)
+        @s_w = @suit_warn.map { |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
+      end
 
-          it_behaves_like "200 OK"
-          it "@input_warn is 5つのカード指定文字~" do
-            expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
-          end
-          it_behaves_like "@suit_warn is empty"
+      context "when params is empty" do
+        let(:params_array) { { array: "" } }
+
+        it_behaves_like "200 OK"
+        it "@input_warn is 5つのカード指定文字~" do
+          expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
         end
+        it_behaves_like "@suit_warn is empty"
+      end
 
-        context "when params is more than an expectation" do
-          let(:params_array) { { array: "S1 H3 D9 C13 S11 D4" } }
+      context "when params is more than an expectation" do
+        let(:params_array) { { array: "S1 H3 D9 C13 S11 D4" } }
 
-          it_behaves_like "200 OK"
-          it "@input_warn is 5つのカード指定文字~" do
-            expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
-          end
-          it_behaves_like "@suit_warn is empty"
+        it_behaves_like "200 OK"
+        it "@input_warn is 5つのカード指定文字~" do
+          expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
         end
+        it_behaves_like "@suit_warn is empty"
+      end
 
-        context "when params is duplicated" do
-          let(:params_array) { { array: "S1 C13 D9 C13 S11" } }
+      context "when params is duplicated" do
+        let(:params_array) { { array: "S1 C13 D9 C13 S11" } }
 
-          it_behaves_like "200 OK"
-          it "@input_warn is カードが重複しています。" do
-            expect(@input_warn).to eq "カードが重複しています。"
-          end
-          it_behaves_like "@suit_warn is empty"
+        it_behaves_like "200 OK"
+        it "@input_warn is カードが重複しています。" do
+          expect(@input_warn).to eq "カードが重複しています。"
         end
+        it_behaves_like "@suit_warn is empty"
+      end
 
-        context "when params has extra spaces" do
-          let(:params_array) { { array: "S1   C13 D9  C13 S11" } }
+      context "when params has extra spaces" do
+        let(:params_array) { { array: "S1   C13 D9  C13 S11" } }
 
-          it_behaves_like "200 OK"
-          it "@input_warn is 5つのカード指定文字~" do
-            expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
-          end
-          it_behaves_like "@suit_warn is empty"
+        it_behaves_like "200 OK"
+        it "@input_warn is 5つのカード指定文字~" do
+          expect(@input_warn).to eq "5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
         end
+        it_behaves_like "@suit_warn is empty"
+      end
 
-        context "when params has extra spaces at the head" do
-          let(:params_array) { { array: " S1 C13 D9 C13 S11" } }
+      context "when params has extra spaces at the head" do
+        let(:params_array) { { array: " S1 C13 D9 C13 S11" } }
 
-          it_behaves_like "200 OK"
-          it "@input_warn is 先頭に〜〜" do
-            expect(@input_warn).to eq "先頭にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
-          end
-          it_behaves_like "@suit_warn is empty"
+        it_behaves_like "200 OK"
+        it "@input_warn is 先頭に〜〜" do
+          expect(@input_warn).to eq "先頭にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
         end
+        it_behaves_like "@suit_warn is empty"
+      end
 
-        context "when params has extra spaces at the end" do
-          let(:params_array) { { array: "S1 C13 D9 C13 S11 " } }
+      context "when params has extra spaces at the end" do
+        let(:params_array) { { array: "S1 C13 D9 C13 S11 " } }
 
-          it_behaves_like "200 OK"
-          it "@input_warn is 末尾に〜〜" do
-            expect(@input_warn).to eq "末尾にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
-          end
-          it_behaves_like "@suit_warn is empty"
+        it_behaves_like "200 OK"
+        it "@input_warn is 末尾に〜〜" do
+          expect(@input_warn).to eq "末尾にスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
         end
+        it_behaves_like "@suit_warn is empty"
+      end
 
-        context "when params has extra spaces both at the head and end" do
-          let(:params_array) { { array: "   S1 C13 D9 C13 S11   " } }
+      context "when params has extra spaces both at the head and end" do
+        let(:params_array) { { array: "   S1 C13 D9 C13 S11   " } }
 
-          it_behaves_like "200 OK"
-          it "@input_warn is 先頭にも末尾にも〜〜" do
-            expect(@input_warn).to eq "先頭にも末尾にもスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
-          end
-          it_behaves_like "@suit_warn is empty"
+        it_behaves_like "200 OK"
+        it "@input_warn is 先頭にも末尾にも〜〜" do
+          expect(@input_warn).to eq "先頭にも末尾にもスペースを入力しないでください。5つのカード指定文字を半角スペース区切りで入力してください。（例：”S1 H3 D9 C13 S11”）"
+        end
+        it_behaves_like "@suit_warn is empty"
+      end
+
+      context "when the first suit is invalid" do
+        let(:params_array) { { array: "S107 C1 D9 C13 D5" } }
+
+        it_behaves_like "200 OK"
+        it_behaves_like "@input_warn is nil"
+        it "@suit_warn is 1番目のカード指定文字が不正です。（S107）" do
+          expect(@s_w).to eq ["1番目のカード指定文字が不正です。（S107）"]
         end
       end
 
-      context "when the suit is invalid" do
-        context "when the first suit is invalid" do
-          let(:params_array) { { array: "S107 C1 D9 C13 D5" } }
+      context "when the multiple suits are invalid" do
+        let(:params_array) { { array: "S107 C1555 D9 C138 D5" } }
 
-          it_behaves_like "200 OK"
-          it_behaves_like "@input_warn is nil"
-          it "@suit_warn is 1番目のカード指定文字が不正です。（S107）" do
-            expect(@s_w).to eq ["1番目のカード指定文字が不正です。（S107）"]
-          end
-        end
-
-        context "when the multiple suits are invalid" do
-          let(:params_array) { { array: "S107 C1555 D9 C138 D5" } }
-
-          it_behaves_like "200 OK"
-          it_behaves_like "@input_warn is nil"
-          it "@suit_warn is 1番目のカード指定文字が不正です。（S107）~~" do
-            expect(@s_w).to eq ["1番目のカード指定文字が不正です。（S107）", "2番目のカード指定文字が不正です。（C1555）", "4番目のカード指定文字が不正です。（C138）"]
-          end
+        it_behaves_like "200 OK"
+        it_behaves_like "@input_warn is nil"
+        it "@suit_warn is 1番目のカード指定文字が不正です。（S107）~~" do
+          expect(@s_w).to eq ["1番目のカード指定文字が不正です。（S107）", "2番目のカード指定文字が不正です。（C1555）", "4番目のカード指定文字が不正です。（C138）"]
         end
       end
     end
