@@ -10,6 +10,9 @@ module API
       end
 
       require "json"
+      require "active_support"
+      require "active_support/core_ext"
+
       resource :cards do
         format :json
 
@@ -20,7 +23,12 @@ module API
 
         desc "Return the accurate JSON"
         post ":check" do
-          @body = params["cards"]
+          # cardsというkeyが指定されているかどうか
+          unless params.first[0].include?("cards")
+            error! "先頭に”cards”というキーを指定してください。（例 : { ”cards”: [ ”H1 H13 H12 H11 H10”, ”H9 C9 S9 H2 C2”, ”C13 D12 C11 H8 H7” ]}）", 404
+          end
+
+          @body = params.first[1]
           @worth = []
           @worth_bool = []
           @show_hand = []
@@ -51,7 +59,6 @@ module API
                 @result << { "card" => b, "error" => "#{s[0]}番目のカード指定文字が不正です。（#{s[1]})" }
               end
             end
-
             if @input_warn[i].blank? && @suit_warn[i].blank?
               @result << { "card" => b, "hand" => @show_hand[i], "best" => @worth_bool[i] }
             end

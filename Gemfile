@@ -42,11 +42,11 @@ group :development do
   gem "listen", "~> 3.3"
   gem "rack-mini-profiler", "~> 2.0"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem "spring"
   gem "rubocop", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
   gem "rubocop-rspec"
+  gem "spring"
 end
 
 group :test do
@@ -61,7 +61,7 @@ group :test do
 end
 
 group :production do
-  gem 'pg'
+  gem "pg"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -78,4 +78,3 @@ gem "rails-controller-testing"
 gem "grape"
 gem "grape-jbuilder"
 gem "hashie"
-
