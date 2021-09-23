@@ -1,5 +1,5 @@
 class Validation
-  def self.validate_input(params)
+  def validate_input(params)
     @array = params[:array]
     @m_array_scanned = @array.scan(/[CDHS]/)
     @make_array = @array.split
@@ -29,7 +29,7 @@ class Validation
     return input_warn
   end
 
-  def self.validate_suit(params)
+  def validate_suit(params)
     @array = params[:array]
     @array_del_spa = @array.strip
     @arr_modi = @array_del_spa.split

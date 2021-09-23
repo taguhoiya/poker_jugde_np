@@ -43,9 +43,12 @@ RSpec.describe "Pokers", type: :request do
     context "when params is valid" do
       before do
         post "/pokers", params: params_array
-        @input_warn = Validation.validate_input(params_array)
-        @suit_warn = Validation.validate_suit(params_array)
-        @show_hand = JudgeHand.judge_hand(params_array)
+        @valid = Validation.new
+        @input_warn = @valid.validate_input(params_array)
+        @suit_warn = @valid.validate_suit(params_array)
+
+        @judgehand = JudgeHand.new
+        @show_hand = @judgehand.judge_hand(params_array)
         @s_w = @suit_warn.map { |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
       end
 
@@ -173,9 +176,12 @@ RSpec.describe "Pokers", type: :request do
     context "when params is invalid" do
       before do
         post "/pokers", params: params_array
-        @input_warn = Validation.validate_input(params_array)
-        @suit_warn = Validation.validate_suit(params_array)
-        @show_hand = JudgeHand.judge_hand(params_array)
+        @valid = Validation.new
+        @input_warn = @valid.validate_input(params_array)
+        @suit_warn = @valid.validate_suit(params_array)
+
+        @judgehand = JudgeHand.new
+        @show_hand = @judgehand.judge_hand(params_array)
         @s_w = @suit_warn.map { |w| "#{w[0]}番目のカード指定文字が不正です。（#{w[1]}）" }
       end
 

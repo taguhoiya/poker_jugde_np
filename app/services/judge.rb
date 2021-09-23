@@ -1,5 +1,5 @@
 class JudgeHand
-  def self.judge_hand(params)
+  def judge_hand(params)
     # common
     @array = params[:array]
     @string = @array.gsub(/[[:space:]]/, "")

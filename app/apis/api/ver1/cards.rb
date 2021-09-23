@@ -39,10 +39,15 @@ module API
 
           @body.each.with_index do |b, i|
             params = { "array": @body[i] }
-            @worth << JudgeHand.judge_hand_api(params)
-            @show_hand << JudgeHand.judge_hand(params)
-            @input_warn << Validation.validate_input(params)
-            @suit_warn << Validation.validate_suit(params)
+            @judgehand = JudgeHand.new
+            @show_hand << @judgehand.judge_hand(params)
+
+            @judgeapi = JudgeHandApi.new
+            @worth << @judgeapi.judge_hand_api(params)
+
+            @valid = Validation.new
+            @input_warn << @valid.validate_input(params)
+            @suit_warn << @valid.validate_suit(params)
           end
 
           @worth_s = @worth.map!(&:to_s)

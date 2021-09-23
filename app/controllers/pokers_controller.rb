@@ -5,9 +5,12 @@ class PokersController < ApplicationController
   def index; end
 
   def create
-    @input_warn = Validation.validate_input(params)
-    @suit_warn = Validation.validate_suit(params)
-    @show_hand = JudgeHand.judge_hand(params)
+    @valid = Validation.new
+    @input_warn = @valid.validate_input(params)
+    @suit_warn = @valid.validate_suit(params)
+
+    @judgehand = JudgeHand.new
+    @show_hand = @judgehand.judge_hand(params)
     render :index
   end
 end
