@@ -5,6 +5,7 @@ module API
       require_relative "../../../services/judge_api"
       require_relative "../../../services/judge"
 
+      # routing error "api/v1/~~"
       route :any, "*path" do
         error! "不正なURLです。", 404
       end
@@ -16,6 +17,7 @@ module API
       resource :cards do
         format :json
 
+        # routing error "api/v1/cards/~~"
         desc "Return warnings"
         get ":check" do
           error! "不正なURLです。", 404
@@ -37,6 +39,7 @@ module API
           @result = []
           @hash = {}
 
+          # individual validations & judging hands
           @body.each.with_index do |b, i|
             params = { "array": @body[i] }
             @judgehand = JudgeHand.new
@@ -53,6 +56,7 @@ module API
           @worth_s = @worth.map!(&:to_s)
           @worth_bool = @worth_s.map { |w| w.gsub(/#{@worth.min}/, "true").gsub(/[1-9]/, "false") }
 
+          # nests for outputs
           @body.each.with_index do |b, i|
             if @input_warn[i].present?
               @result << { "card" => b, "error" => @input_warn[i] }
